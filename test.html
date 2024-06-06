@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betty's Newsletter</title>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Betty's Newsletter</title>
+        <style>
+    
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #1b1b1b;
+            color: #fff;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #0d0d0d;
+            color: #fff;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            min-height: 70px;
+            border-bottom: #333 3px solid;
+            display: flex;
+            align-items: center;
+        }
+        header img {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            margin-right: 20px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .main {
+            padding: 20px;
+            background: #2e2e2e;
+            margin-top: 20px;
+        }
+        footer {
+            background: #0d0d0d;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .newsletter {
+            background: #1f1f1f;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .newsletter h3 {
+            color: #fff;
+        }
+        .newsletter p {
+            color: #ccc;
+        }
+        .newsletter input[type="text"], .newsletter textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 20px 0;
+            border: none;
+            background: #444;
+            color: #fff;
+        }
+        .newsletter input[type="submit"] {
+            background: #333;
+            color: #fff;
+            border: 0;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .link {
+            color: #4a90e2;
+        }
+    </style>
+    </head>
+        <!-- Firebase App (the core Firebase SDK) -->
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+        <!-- Firebase Firestore SDK -->
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+        <script>
+            // Your web app's Firebase configuration
+            var firebaseConfig = {
+                apiKey: "AIzaSyCLgxEihnaxiaf2-Wk8LMGkVLq59czx-KU",
+                authDomain: "betty-newsletter.firebaseapp.com",
+                projectId: "betty-newsletter",
+                storageBucket: "betty-newsletter.appspot.com",
+                messagingSenderId: "960145447271",
+                appId: "1:960145447271:web:1382ea4ba5acbe1bf077c2",
+                measurementId: "G-9F8JWFDJR0"
+            };
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            var db = firebase.firestore();
+    
+            function addContent(textareaId, contentId) {
+                const textarea = document.getElementById(textareaId);
+                const contentDiv = document.getElementById(contentId);
+                const newContent = document.createElement('p');
+                const date = new Date().toLocaleDateString();
+                const content = `${date}: ${textarea.value}`;
+    
+                newContent.textContent = content;
+                newContent.style.color = '#ccc';
+                contentDiv.appendChild(newContent);
+    
+                saveContent(contentId, content);
+                textarea.value = '';
+            }
+    
+            function saveContent(key, content) {
+                db.collection("content").add({
+                    key: key,
+                    content: content,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                })
+                .then(() => {
+                    console.log("Content saved successfully");
+                })
+                .catch((error) => {
+                    console.error("Error saving content: ", error);
+                });
+            }
+    
+            function loadContent(key, contentId) {
+                const contentDiv = document.getElementById(contentId);
+                db.collection("content").where("key", "==", key).orderBy("timestamp")
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        const newContent = document.createElement('p');
+                        newContent.textContent = doc.data().content;
+                        newContent.style.color = '#ccc';
+                        contentDiv.appendChild(newContent);
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error loading content: ", error);
+                });
+            }
+    
+            document.addEventListener('DOMContentLoaded', function() {
+                loadContent('content-1', 'content-1');
+                loadContent('content-2', 'content-2');
+                loadContent('content-3', 'content-3');
+                loadContent('content-4', 'content-4');
+            });
+        </script>
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <img src="image.png" alt="Betty">
+                <h1>Betty's Newsletter</h1>
+            </div>
+        </header>
+    
+        <div class="container main">
+            <h2>Über mich</h2>
+            <p>
+                Hallo, ich bin Betty. Ich bin Ingenieurin und autodidaktische Programmiererin, die Forschungssoftware entwickelt. Sehr oft stellt diese Software ein Rechenmodell zur Simulation einer ingenieurtechnischen Anwendung dar. 
+                Um ein solches Modell zu validieren, muss ich meine Ergebnisse mit Daten wie anderen Simulationsdaten oder experimentellen Beobachtungen vergleichen. 
+                Zu diesem Zweck und anderen schreibe ich auch Code zur Analyse und Umwandlung von Forschungsdaten. Meine Software hat in der Regel viele Abhängigkeiten in Form des Betriebssystems und von Drittanbieterbibliotheken. 
+                Während ich sehr darauf bedacht bin, die Reproduzierbarkeit meiner Berechnungsergebnisse zu gewährleisten, kann ich nicht zu viel Arbeitszeit darauf verwenden, dies zu erreichen. 
+                Mein beruflicher Hintergrund kann in jeder Ingenieurdisziplin verortet werden.
+            </p>
+    
+            <h2>Kontakt</h2>
+            <p>
+                <strong>Name:</strong> Prof. Dr. Bernd Flemisch<br>
+                <strong>Weblink:</strong> <a href="#" class="link">Weblink</a><br>
+                <strong>Email:</strong> <a href="mailto:bernd.flemisch@iws.uni-stuttgart.de" class="link">bernd.flemisch@iws.uni-stuttgart.de</a><br>
+                <strong>Telefon:</strong> +49 711 685 69162
+            </p>
+    
+            <div class="newsletter">
+                <h3>Archetyp Betty Whitepaper <small>(Datum: 2024-06-06)</small></h3>
+                <p>Initiativen der ersten Förderperiode erfassen.</p>
+                <textarea id="new-content-1" placeholder="Füge hier neue Inhalte hinzu..."></textarea>
+                <input type="submit" value="Speichern" onclick="addContent('new-content-1', 'content-1')">
+                <div id="content-1"></div>
+            </div>
+    
+            <div class="newsletter">
+                <h3>Betty’s (Re)Search Engine <small>(Datum: 2024-06-06)</small></h3>
+                <p>
+                    Die Auffindbarkeit von Forschungssoftware wird durch Betty’s (Re)Search Engine adressiert, ein Service, der es Nutzern ermöglicht, nach bestehender Forschungssoftware für spezifische Anwendungen zu suchen, wodurch doppelte Implementierungsaufwände minimiert werden. Der Frontend der Live-Instanz wurde kürzlich verbessert und die Engine um die Möglichkeit erweitert, Suchergebnisse in den Open Research Knowledge Graph (ORKG) zu exportieren. Der Quellcode ist jetzt öffentlich bei <a href="https://gitlab.com/tuc-isse/public/betty-research-engine/" class="link">GitLab</a> gehostet, und die Architektur wird in einem Preprint erläutert, der im Ing.Grid Journal eingereicht wurde (<a href="https://preprints.inggrid.org/repository/view/16/" class="link">Preprint</a>), ergänzt durch ein <a href="https://www.youtube.com/watch?v=5oGJJxBSJ-M" class="link">Tutorial-Video</a> auf YouTube. Bis heute wurde die Live-Engine etwa 15000 Mal besucht.
+                </p>
+                <p>Mehr dazu: <a href="https://www.inggrid.org/article/id/3953/" class="link">Ing.Grid Artikel</a></p>
+                <textarea id="new-content-2" placeholder="Füge hier neue Inhalte hinzu..."></textarea>
+                <input type="submit" value="Speichern" onclick="addContent('new-content-2', 'content-2')">
+                <div id="content-2"></div>
+            </div>
+    
+            <div class="newsletter">
+                <h3>Reproduzierbarkeit von veröffentlichten Forschungsergebnissen <small>(Datum: 2024-06-06)</small></h3>
+                <p>
+                    Für eine verbesserte Reproduzierbarkeit von veröffentlichten Forschungsergebnissen haben wir Tools untersucht, die Forschern helfen können, ihre Ausführungspipelines zu automatisieren und möglicherweise zu containerisieren. Wir haben eine Reihe von Workflow-Tools hinsichtlich verschiedener relevanter Fähigkeiten analysiert und unsere Ergebnisse in einem Artikel im Ing.Grid Journal detailliert beschrieben (<a href="https://www.inggrid.org/article/id/3726/" class="link">Ing.Grid Artikel</a>). Die Wiederverwendbarkeit von Forschungssoftware in neuen Projekten erfordert hingegen hochwertigen Quellcode, der Modularität, Erweiterbarkeit usw. betont. Im vergangenen Jahr haben wir unser Vorlesungsmaterial zur nachhaltigen Entwicklung von Forschungssoftware überarbeitet, einschließlich der Dokumentation eines begleitenden Studentenprojekts (<a href="https://gitlab.com/sustainable-simulation-software" class="link">GitLab Projekt</a>), das wir im Sommersemester 2023 an der Universität Stuttgart erfolgreich durchgeführt haben.
+                </p>
+                <textarea id="new-content-3" placeholder="Füge hier neue Inhalte hinzu..."></textarea>
+    
+
+        <footer>
+            <div class="container">
+                <p>&copy; 2022 Betty's Newsletter. All rights reserved.</p>
+            </div>
+        </footer>
